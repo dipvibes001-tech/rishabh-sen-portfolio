@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-primary: #080B0D;
+    --bg-secondary: #0D1215;
+    --bg-card: #12181C;
+    --glass-surface: rgba(255, 255, 255, 0.05);
+    --border-subtle: rgba(255, 255, 255, 0.10);
+    --accent-cyan: #65E6EA;
+    --accent-purple: #8B7CFF;
+    --accent-magenta: #C56CFF;
+    --text-muted: #9CA7AD;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #080B0D;
+    color: #FFFFFF;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Cinzel', Georgia, serif;
+    letter-spacing: -0.01em;
+  }
+
+  .font-editorial {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+
+  .font-sans-clean {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* Premium 3D & Depth Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1500 {
+  perspective: 1500px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.translate-z-10 {
+  transform: translateZ(10px);
+}
+
+.translate-z-20 {
+  transform: translateZ(20px);
+}
+
+.translate-z-30 {
+  transform: translateZ(30px);
+}
+
+.translate-z-40 {
+  transform: translateZ(40px);
+}
+
+/* Glassmorphism Surface */
+.glass-panel {
+  background: rgba(18, 24, 28, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-subtle {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(18, 24, 28, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(101, 230, 234, 0.35);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7),
+              0 0 30px -10px rgba(101, 230, 234, 0.2),
+              0 0 45px -15px rgba(139, 124, 255, 0.2);
+}
+
+/* Custom luxury scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080B0D;
+}
+::-webkit-scrollbar-thumb {
+  background: #1B2329;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #65E6EA;
+}
+
+/* Studio Signature Gradient Text */
+.gradient-studio-text {
+  background: linear-gradient(135deg, #65E6EA 0%, #8B7CFF 50%, #C56CFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cyan-gradient-text {
+  background: linear-gradient(135deg, #FFFFFF 0%, #65E6EA 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Light reflections and glowing orbs */
+@keyframes floatOrb1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(40px, -60px) scale(1.1);
+  }
+}
+
+@keyframes floatOrb2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1.1);
+  }
+  50% {
+    transform: translate(-50px, 40px) scale(0.95);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+}
+
+.animate-orb-1 {
+  animation: floatOrb1 18s ease-in-out infinite;
+}
+
+.animate-orb-2 {
+  animation: floatOrb2 22s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* Subtle Cinematic Vignette */
+.cinematic-vignette {
+  box-shadow: inset 0 0 100px rgba(8, 11, 13, 0.85);
+}
+
+/* Light beam sweep */
+@keyframes lightSweep {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(200%) rotate(45deg);
+  }
+}
+
+.light-reflection-hover:hover::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+  animation: lightSweep 0.85s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Premium Footer Design Credit Animation */
+@keyframes creditReveal {
+  0% {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.animate-credit-reveal {
+  animation: creditReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes textShimmerSweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+.animate-shimmer-sweep {
+  animation: textShimmerSweep 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-credit-reveal {
+    animation: none !important;
+    filter: none !important;
+    transform: none !important;
+  }
+  .animate-shimmer-sweep {
+    animation: none !important;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
