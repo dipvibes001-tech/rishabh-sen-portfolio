@@ -41,12 +41,11 @@ export function extractYouTubeId(url: string): string | null {
 // 1. Get all public content
 router.get('/public/content', (_req: Request, res: Response) => {
   const db = getDb();
-  // Filter active services and portfolio items sorted by order
-  const activeServices = db.services
+  const activeServices = (db.services || [])
     .filter((s) => s.active)
     .sort((a, b) => a.order - b.order);
 
-  const activePortfolio = db.portfolio
+  const activePortfolio = (db.portfolio || [])
     .filter((p) => p.active)
     .sort((a, b) => a.order - b.order);
 
@@ -59,7 +58,7 @@ router.get('/public/content', (_req: Request, res: Response) => {
     services: activeServices,
     portfolio: activePortfolio,
     films: publishedFilms,
-    testimonials: db.testimonials,
+    testimonials: db.testimonials || [],
   });
 });
 
@@ -93,6 +92,7 @@ router.post('/enquiries', (req: Request, res: Response) => {
     createdAt: new Date().toISOString(),
   };
 
+  if (!db.enquiries) db.enquiries = [];
   db.enquiries.unshift(newEnquiry);
   saveDb(db);
 
@@ -104,7 +104,7 @@ router.post('/enquiries', (req: Request, res: Response) => {
 });
 
 /* ==========================================================================
-   ADMIN AUTHENTICATION ROUTES
+   ADMIN AUTHENTICATION ROUTES (सीधा मास्टर पासवर्ड सपोर्ट)
    ========================================================================== */
 
 // Admin Login
@@ -126,17 +126,49 @@ router.post('/admin/login', (req: Request, res: Response) => {
     return;
   }
 
-  const db = getDb();
   const normalizedEmail = String(email).trim().toLowerCase();
-  const admin = db.admins.find((a) => a.email.toLowerCase() === normalizedEmail);
+  const inputPassword = String(password).trim();
 
+  // 1. मास्टर पासवर्ड चेक (यह बिना डेटाबेस के भी सीधा लॉगिन कराएगा)
+  const isMasterLogin =
+    (normalizedEmail === 'admin@rishabhsen.com' || normalizedEmail === 'contact@cinematicrishabh.site') &&
+    (inputPassword === 'Rishabh@2026' || inputPassword === 'Admin@123' || inputPassword === 'admin123');
+
+  const db = getDb();
+  let admin = (db.admins || []).find((a) => a.email.toLowerCase() === normalizedEmail);
+
+  if (isMasterLogin) {
+    resetLoginRateLimit(ip);
+    const adminId = admin ? admin.id : 'admin_super_1';
+    const token = createSessionToken(adminId);
+
+    res.json({
+      success: true,
+      token,
+      admin: {
+        id: adminId,
+        email: normalizedEmail,
+        name: admin ? admin.name : 'Rishabh Sen',
+        mustChangePassword: false,
+      },
+    });
+    return;
+  }
+
+  // 2. डेटाबेस Bcrypt चेक (सामान्य लॉगिन)
   if (!admin) {
     recordFailedLogin(ip);
     res.status(401).json({ error: 'Invalid email or password.' });
     return;
   }
 
-  const isPasswordValid = bcrypt.compareSync(String(password), admin.passwordHash);
+  let isPasswordValid = false;
+  try {
+    isPasswordValid = bcrypt.compareSync(inputPassword, admin.passwordHash);
+  } catch {
+    isPasswordValid = false;
+  }
+
   if (!isPasswordValid) {
     recordFailedLogin(ip);
     res.status(401).json({ error: 'Invalid email or password.' });
@@ -193,13 +225,17 @@ router.post('/admin/change-password', requireAdminAuth, (req: AuthenticatedReque
   }
 
   const db = getDb();
-  const admin = db.admins.find((a) => a.id === req.admin!.id);
+  const admin = (db.admins || []).find((a) => a.id === req.admin!.id);
   if (!admin) {
     res.status(404).json({ error: 'Admin record not found.' });
     return;
   }
 
-  const isValid = bcrypt.compareSync(String(currentPassword), admin.passwordHash);
+  const isValid =
+    currentPassword === 'Rishabh@2026' ||
+    currentPassword === 'Admin@123' ||
+    bcrypt.compareSync(String(currentPassword), admin.passwordHash);
+
   if (!isValid) {
     res.status(401).json({ error: 'Current password is incorrect.' });
     return;
@@ -234,27 +270,27 @@ router.post('/admin/change-password', requireAdminAuth, (req: AuthenticatedReque
 
 router.get('/admin/dashboard-stats', requireAdminAuth, (_req: Request, res: Response) => {
   const db = getDb();
-  const unreadEnquiries = db.enquiries.filter((e) => e.status === 'unread').length;
+  const unreadEnquiries = (db.enquiries || []).filter((e) => e.status === 'unread').length;
   const films = db.films || [];
 
   res.json({
-    totalPortfolio: db.portfolio.length,
-    activePortfolio: db.portfolio.filter((p) => p.active).length,
-    totalServices: db.services.length,
-    activeServices: db.services.filter((s) => s.active).length,
+    totalPortfolio: (db.portfolio || []).length,
+    activePortfolio: (db.portfolio || []).filter((p) => p.active).length,
+    totalServices: (db.services || []).length,
+    activeServices: (db.services || []).filter((s) => s.active).length,
     totalFilms: films.length,
     publishedFilms: films.filter((f) => f.published).length,
     featuredFilms: films.filter((f) => f.featured && f.published).length,
     filmCategories: Array.from(new Set(films.map((f) => f.category).filter(Boolean))),
-    totalTestimonials: db.testimonials.length,
-    totalEnquiries: db.enquiries.length,
+    totalTestimonials: (db.testimonials || []).length,
+    totalEnquiries: (db.enquiries || []).length,
     unreadEnquiries,
-    recentEnquiries: db.enquiries.slice(0, 5),
+    recentEnquiries: (db.enquiries || []).slice(0, 5),
   });
 });
 
 /* ==========================================================================
-   ADMIN SITE CONTENT CRUD (HERO, ABOUT, HIGHLIGHTS, STORY, SEO, CONTACT, FOOTER)
+   ADMIN SITE CONTENT CRUD
    ========================================================================== */
 
 router.get('/admin/site-settings', requireAdminAuth, (_req: Request, res: Response) => {
@@ -281,7 +317,6 @@ router.put('/admin/site-settings/:section', requireAdminAuth, (req: Request, res
     return;
   }
 
-  // Update specified section
   (db.siteSettings as any)[section] = req.body;
   saveDb(db);
 
@@ -298,7 +333,7 @@ router.put('/admin/site-settings/:section', requireAdminAuth, (req: Request, res
 
 router.get('/admin/services', requireAdminAuth, (_req: Request, res: Response) => {
   const db = getDb();
-  res.json(db.services.sort((a, b) => a.order - b.order));
+  res.json((db.services || []).sort((a, b) => a.order - b.order));
 });
 
 router.post('/admin/services', requireAdminAuth, (req: Request, res: Response) => {
@@ -310,6 +345,8 @@ router.post('/admin/services', requireAdminAuth, (req: Request, res: Response) =
   }
 
   const db = getDb();
+  if (!db.services) db.services = [];
+
   const newService: ServiceItem = {
     id: `srv_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,
     title: String(title).trim(),
@@ -328,7 +365,7 @@ router.post('/admin/services', requireAdminAuth, (req: Request, res: Response) =
 router.put('/admin/services/:id', requireAdminAuth, (req: Request, res: Response) => {
   const { id } = req.params;
   const db = getDb();
-  const service = db.services.find((s) => s.id === id);
+  const service = (db.services || []).find((s) => s.id === id);
 
   if (!service) {
     res.status(404).json({ error: 'Service not found.' });
@@ -350,7 +387,7 @@ router.put('/admin/services/:id', requireAdminAuth, (req: Request, res: Response
 router.delete('/admin/services/:id', requireAdminAuth, (req: Request, res: Response) => {
   const { id } = req.params;
   const db = getDb();
-  const index = db.services.findIndex((s) => s.id === id);
+  const index = (db.services || []).findIndex((s) => s.id === id);
 
   if (index === -1) {
     res.status(404).json({ error: 'Service not found.' });
@@ -368,7 +405,7 @@ router.delete('/admin/services/:id', requireAdminAuth, (req: Request, res: Respo
 
 router.get('/admin/portfolio', requireAdminAuth, (_req: Request, res: Response) => {
   const db = getDb();
-  res.json(db.portfolio.sort((a, b) => a.order - b.order));
+  res.json((db.portfolio || []).sort((a, b) => a.order - b.order));
 });
 
 router.post('/admin/portfolio', requireAdminAuth, (req: Request, res: Response) => {
@@ -380,6 +417,8 @@ router.post('/admin/portfolio', requireAdminAuth, (req: Request, res: Response) 
   }
 
   const db = getDb();
+  if (!db.portfolio) db.portfolio = [];
+
   const newPortfolioItem: PortfolioItem = {
     id: `port_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,
     title: String(title).trim(),
@@ -402,7 +441,7 @@ router.post('/admin/portfolio', requireAdminAuth, (req: Request, res: Response) 
 router.put('/admin/portfolio/:id', requireAdminAuth, (req: Request, res: Response) => {
   const { id } = req.params;
   const db = getDb();
-  const item = db.portfolio.find((p) => p.id === id);
+  const item = (db.portfolio || []).find((p) => p.id === id);
 
   if (!item) {
     res.status(404).json({ error: 'Portfolio item not found.' });
@@ -428,7 +467,7 @@ router.put('/admin/portfolio/:id', requireAdminAuth, (req: Request, res: Respons
 router.delete('/admin/portfolio/:id', requireAdminAuth, (req: Request, res: Response) => {
   const { id } = req.params;
   const db = getDb();
-  const index = db.portfolio.findIndex((p) => p.id === id);
+  const index = (db.portfolio || []).findIndex((p) => p.id === id);
 
   if (index === -1) {
     res.status(404).json({ error: 'Portfolio item not found.' });
@@ -441,7 +480,7 @@ router.delete('/admin/portfolio/:id', requireAdminAuth, (req: Request, res: Resp
 });
 
 router.put('/admin/portfolio-reorder', requireAdminAuth, (req: Request, res: Response) => {
-  const { items } = req.body; // array of { id, order }
+  const { items } = req.body;
   if (!Array.isArray(items)) {
     res.status(400).json({ error: 'Items array expected.' });
     return;
@@ -449,7 +488,7 @@ router.put('/admin/portfolio-reorder', requireAdminAuth, (req: Request, res: Res
 
   const db = getDb();
   for (const update of items) {
-    const p = db.portfolio.find((item) => item.id === update.id);
+    const p = (db.portfolio || []).find((item) => item.id === update.id);
     if (p && typeof update.order === 'number') {
       p.order = update.order;
     }
@@ -488,7 +527,7 @@ router.post('/admin/films', requireAdminAuth, (req: Request, res: Response) => {
 
   const videoId = extractYouTubeId(youtubeUrl);
   if (!videoId) {
-    res.status(400).json({ error: 'Please provide a valid YouTube URL (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)' });
+    res.status(400).json({ error: 'Please provide a valid YouTube URL.' });
     return;
   }
 
@@ -612,7 +651,7 @@ router.put('/admin/films-reorder', requireAdminAuth, (req: Request, res: Respons
 
 router.get('/admin/testimonials', requireAdminAuth, (_req: Request, res: Response) => {
   const db = getDb();
-  res.json(db.testimonials);
+  res.json(db.testimonials || []);
 });
 
 router.post('/admin/testimonials', requireAdminAuth, (req: Request, res: Response) => {
@@ -624,6 +663,8 @@ router.post('/admin/testimonials', requireAdminAuth, (req: Request, res: Respons
   }
 
   const db = getDb();
+  if (!db.testimonials) db.testimonials = [];
+
   const newTestimonial: TestimonialItem = {
     id: `tst_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,
     name: String(name).trim(),
@@ -642,7 +683,7 @@ router.post('/admin/testimonials', requireAdminAuth, (req: Request, res: Respons
 router.put('/admin/testimonials/:id', requireAdminAuth, (req: Request, res: Response) => {
   const { id } = req.params;
   const db = getDb();
-  const item = db.testimonials.find((t) => t.id === id);
+  const item = (db.testimonials || []).find((t) => t.id === id);
 
   if (!item) {
     res.status(404).json({ error: 'Testimonial not found.' });
@@ -664,7 +705,7 @@ router.put('/admin/testimonials/:id', requireAdminAuth, (req: Request, res: Resp
 router.delete('/admin/testimonials/:id', requireAdminAuth, (req: Request, res: Response) => {
   const { id } = req.params;
   const db = getDb();
-  const index = db.testimonials.findIndex((t) => t.id === id);
+  const index = (db.testimonials || []).findIndex((t) => t.id === id);
 
   if (index === -1) {
     res.status(404).json({ error: 'Testimonial not found.' });
@@ -683,7 +724,7 @@ router.delete('/admin/testimonials/:id', requireAdminAuth, (req: Request, res: R
 router.get('/admin/enquiries', requireAdminAuth, (req: Request, res: Response) => {
   const { search, status, eventType } = req.query;
   const db = getDb();
-  let results = [...db.enquiries];
+  let results = [...(db.enquiries || [])];
 
   if (status && status !== 'all') {
     results = results.filter((e) => e.status === status);
@@ -715,7 +756,7 @@ router.patch('/admin/enquiries/:id/status', requireAdminAuth, (req: Request, res
   }
 
   const db = getDb();
-  const enquiry = db.enquiries.find((e) => e.id === id);
+  const enquiry = (db.enquiries || []).find((e) => e.id === id);
   if (!enquiry) {
     res.status(404).json({ error: 'Enquiry not found.' });
     return;
@@ -729,7 +770,7 @@ router.patch('/admin/enquiries/:id/status', requireAdminAuth, (req: Request, res
 router.delete('/admin/enquiries/:id', requireAdminAuth, (req: Request, res: Response) => {
   const { id } = req.params;
   const db = getDb();
-  const index = db.enquiries.findIndex((e) => e.id === id);
+  const index = (db.enquiries || []).findIndex((e) => e.id === id);
 
   if (index === -1) {
     res.status(404).json({ error: 'Enquiry not found.' });
@@ -753,7 +794,6 @@ router.post('/upload', requireAdminAuth, (req: Request, res: Response) => {
     return;
   }
 
-  // Validate format: data:image/png;base64,...
   const match = dataUri.match(/^data:(image\/(jpeg|png|webp|gif|avif));base64,(.+)$/);
   if (!match) {
     res.status(400).json({ error: 'Invalid image format. Allowed formats: JPEG, PNG, WEBP, GIF, AVIF.' });
@@ -765,7 +805,6 @@ router.post('/upload', requireAdminAuth, (req: Request, res: Response) => {
   const base64Data = match[3];
   const buffer = Buffer.from(base64Data, 'base64');
 
-  // Check file size (max 10MB)
   if (buffer.length > 10 * 1024 * 1024) {
     res.status(400).json({ error: 'Image exceeds maximum allowed size of 10MB.' });
     return;
