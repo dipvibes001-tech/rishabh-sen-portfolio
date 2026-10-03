@@ -17,6 +17,7 @@ import { ContactSection } from './components/public/ContactSection';
 import { Footer } from './components/public/Footer';
 import { CinematicBackground } from './components/common/CinematicBackground';
 import { LoadingScreen } from './components/common/LoadingScreen';
+import { MobileCinematicDock } from './components/common/MobileCinematicDock';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import {
@@ -154,7 +155,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#080B0D] text-white font-sans-clean selection:bg-[#65E6EA] selection:text-[#080B0D] relative overflow-x-hidden w-full max-w-[100vw]">
-      {/* Initial reveal loading animation */}
+      {/* 3D Sony FX3 Camera Initial Reveal Animation */}
       {showLoadingScreen && (
         <LoadingScreen onFinished={() => setShowLoadingScreen(false)} />
       )}
@@ -165,7 +166,7 @@ export default function App() {
       {/* 1. Sticky Navigation */}
       <Navbar onAdminClick={() => navigateTo(adminUser ? '/admin' : '/admin/login')} />
 
-      {/* 2. Top Section: ABOUT RISHABH SEN (वेबसाइट खुलते ही सबसे पहले स्क्रीन पर यही आएगा) */}
+      {/* 2. Top Viewport: ABOUT RISHABH SEN */}
       <About about={content.siteSettings?.about} />
 
       {/* 3. Cinematography / Films Showcase */}
@@ -193,7 +194,7 @@ export default function App() {
       {/* 8. Testimonials Section */}
       <Testimonials testimonials={content.testimonials || []} />
 
-      {/* 9. Social Section */}
+      {/* 9. Social Section (Connect & Follow 3D Cards) */}
       <SocialSection contact={content.siteSettings?.contact} />
 
       {/* 10. Contact Section */}
@@ -207,6 +208,12 @@ export default function App() {
         footer={content.siteSettings?.footer}
         contact={content.siteSettings?.contact}
         onAdminClick={() => navigateTo(adminUser ? '/admin' : '/admin/login')}
+      />
+
+      {/* 12. Android/Mobile Interactive Dock & Real-Time Laser Scroll Progress */}
+      <MobileCinematicDock
+        whatsapp={content.siteSettings?.contact?.whatsapp}
+        phone={content.siteSettings?.contact?.phone}
       />
     </div>
   );
