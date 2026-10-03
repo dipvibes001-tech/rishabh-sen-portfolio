@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, ArrowUp, Instagram, Youtube, Facebook, Mail, Phone, MapPin, X, Film } from 'lucide-react';
+import { Lock, ArrowUp, Instagram, Youtube, Facebook, Mail, Phone, MapPin, X, Film, Sparkles } from 'lucide-react';
 import { SiteSettings } from '../../types';
 
 interface FooterProps {
@@ -31,7 +31,8 @@ export const Footer: React.FC<FooterProps> = ({ footer, contact, onAdminClick })
   };
 
   return (
-    <footer className="bg-[#080B0D] border-t border-white/10 text-[#9CA7AD] pt-14 sm:pt-20 pb-10 sm:pb-12 relative z-10 overflow-hidden">
+    // pb-36 mobile ke liye taaki floating button ke upar clear gap rahe
+    <footer className="bg-[#080B0D] border-t border-white/10 text-[#9CA7AD] pt-14 sm:pt-20 pb-36 sm:pb-14 relative z-10 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-12 pb-10 sm:pb-14 border-b border-white/10">
           {/* Brand Column */}
@@ -175,8 +176,8 @@ export const Footer: React.FC<FooterProps> = ({ footer, contact, onAdminClick })
           </div>
         </div>
 
-        {/* Absolute Bottom Design Credit */}
-        <div className="mt-8 pt-6 pb-2 border-t border-white/5 flex items-center justify-center">
+        {/* Absolute Bottom Design Credit: DipVibe.S (Upar laya gaya & mobile ke liye safe margin) */}
+        <div className="mt-8 pt-6 pb-6 sm:pb-2 border-t border-white/5 flex items-center justify-center relative z-20">
           <a
             href="https://wa.me/message/MWKLGMHWBIIIA1"
             target="_blank"
@@ -202,12 +203,12 @@ export const Footer: React.FC<FooterProps> = ({ footer, contact, onAdminClick })
               aria-hidden="true"
             />
 
-            {/* Segment 1: "Design by" -> muted/light text */}
+            {/* Segment 1: "Design by" */}
             <span className="relative z-10 text-[#9CA7AD] group-hover:text-white/90 transition-colors duration-200 font-light">
               Design by
             </span>
 
-            {/* Segment 2: "DipVibe.S" -> cyan/purple premium accent */}
+            {/* Segment 2: "DipVibe.S" */}
             <span className="relative z-10 font-bold bg-gradient-to-r from-[#65E6EA] via-[#8B7CFF] to-[#C56CFF] bg-clip-text text-transparent group-hover:drop-shadow-[0_0_8px_rgba(101,230,234,0.6)] group-hover:scale-[1.02] transition-all duration-200 inline-block">
               DipVibe.S
             </span>
@@ -215,12 +216,12 @@ export const Footer: React.FC<FooterProps> = ({ footer, contact, onAdminClick })
             {/* Separator dot */}
             <span className="relative z-10 text-[#9CA7AD]/60 font-medium">·</span>
 
-            {/* Segment 3: "7880236703" -> clean white/muted text */}
+            {/* Segment 3: "7880236703" */}
             <span className="relative z-10 text-white/80 group-hover:text-white font-mono tracking-wider transition-colors duration-200">
               7880236703
             </span>
 
-            {/* Thin animated gradient underline LEFT -> RIGHT underneath COMPLETE credit */}
+            {/* Thin animated gradient underline */}
             <span
               className="absolute bottom-1 left-4 right-4 h-[1.5px] bg-gradient-to-r from-[#65E6EA] via-[#8B7CFF] to-[#C56CFF] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out pointer-events-none shadow-[0_0_6px_#65E6EA]"
               aria-hidden="true"
@@ -285,3 +286,5 @@ export const Footer: React.FC<FooterProps> = ({ footer, contact, onAdminClick })
     </footer>
   );
 };
+
+export default Footer;
