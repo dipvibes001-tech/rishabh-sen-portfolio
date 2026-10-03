@@ -1,168 +1,119 @@
 import React from 'react';
-import { Camera, Globe, Heart, Sparkles, Sliders, Film } from 'lucide-react';
-import { SiteSettings } from '../../types';
-import { Card3D } from '../common/Card3D';
+import { Sparkles, Film, Heart, Globe, Camera } from 'lucide-react';
+import { SiteAbout } from '../../types';
 
 interface AboutProps {
-  about?: SiteSettings['about'];
+  about?: SiteAbout;
 }
 
 export const About: React.FC<AboutProps> = ({ about }) => {
-  const name = String(about?.name || 'Rishabh Sen').trim();
-  const introduction = String(
-    about?.introduction ||
-      'I document raw human emotion, light, and unspoken connection through an uncompromising cinematic lens.'
-  ).trim();
-  const story = String(
-    about?.story ||
-      'With over a decade behind cinema cameras, I transitioned from narrative filmmaking into luxury destination weddings and editorial portraiture. My work is informed by 35mm celluloid aesthetics, delicate play of shadows, and an instinct for moments that happen in fractions of a second.'
-  ).trim();
-  const philosophy = String(
-    about?.philosophy ||
-      'A great photograph or film is never about equipment—it is about stillness in chaos, the breath before a spoken vow, and honoring the dignity of human celebration.'
-  ).trim();
-  const portraitUrl = about?.portraitUrl || '';
-  const stats = Array.isArray(about?.stats) && about.stats.length > 0
-    ? about.stats.filter(Boolean)
-    : [
-        { label: 'Years Experience', value: '11', suffix: '+' },
-        { label: 'Cinematic Projects', value: '380', suffix: '+' },
-        { label: 'Happy Clients', value: '520', suffix: '+' },
-        { label: 'Destinations Covered', value: '28', suffix: ' Countries' },
-      ];
+  // Aapki uploaded camera photo default set kar di gayi hai
+  const portraitImg =
+    about?.imageUrl ||
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80';
 
   return (
-    <section id="about" className="py-16 sm:py-24 lg:py-28 bg-[#080B0D] relative border-t border-white/10 z-10 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mb-10 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#12181C] border border-[#65E6EA]/30 text-xs font-semibold tracking-wider text-[#65E6EA] uppercase mb-3 sm:mb-4 shadow-[0_0_15px_rgba(101,230,234,0.15)]">
-            <Sparkles className="w-3.5 h-3.5 text-[#8B7CFF]" />
-            <span>01. The Visual Storyteller</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white font-display leading-tight break-words">
-            About <span className="gradient-studio-text">{name}</span>
-          </h2>
-        </div>
+    <section id="about" className="py-24 sm:py-32 bg-[#080B0D] relative border-t border-white/10 z-10">
+      {/* Subtle Glow */}
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-[#65E6EA]/5 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Grid: Story on Left, 3D Portrait on Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-          {/* Left Column: Narrative Prose */}
-          <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-            <div className="space-y-3 sm:space-y-4">
-              <h3 className="text-lg sm:text-2xl font-editorial italic text-white font-normal leading-relaxed">
-                &ldquo;{introduction}&rdquo;
-              </h3>
-              <p className="text-sm sm:text-base text-[#9CA7AD] leading-relaxed font-sans-clean font-light">
-                {story}
-              </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          {/* Left Narrative Column */}
+          <div className="lg:col-span-7 space-y-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#12181C] border border-[#65E6EA]/30 text-xs font-semibold tracking-wider text-[#65E6EA] uppercase shadow-[0_0_15px_rgba(101,230,234,0.15)]">
+              <Sparkles className="w-3.5 h-3.5 text-[#8B7CFF]" />
+              <span>01. The Visual Storyteller</span>
             </div>
+
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-extrabold text-white tracking-tight leading-tight">
+              About <span className="bg-gradient-to-r from-[#65E6EA] to-[#B388FF] bg-clip-text text-transparent">Rishabh Sen</span>
+            </h2>
+
+            <blockquote className="text-base sm:text-xl font-serif italic text-white/90 border-l-2 border-[#65E6EA] pl-6 leading-relaxed">
+              &ldquo;I document raw human emotion, light, and unspoken connection through an uncompromising cinematic lens.&rdquo;
+            </blockquote>
+
+            <p className="text-sm sm:text-base text-[#9CA7AD] leading-relaxed font-light">
+              {about?.story ||
+                'With over a decade behind cinema cameras, I transitioned from narrative filmmaking into luxury destination weddings and editorial portraiture. My work is informed by 35mm celluloid aesthetics, delicate play of shadows, and an instinct for moments that happen in fractions of a second.'}
+            </p>
 
             {/* Creative Philosophy Box */}
-            <div className="p-5 sm:p-8 bg-[#12181C] border-l-4 border-[#65E6EA] border-y border-r border-white/10 rounded-2xl relative shadow-lg">
-              <span className="text-[11px] sm:text-xs uppercase tracking-[0.2em] text-[#65E6EA] font-bold block mb-2">
+            <div className="p-6 rounded-2xl bg-[#0D1215] border border-white/10 space-y-2">
+              <div className="text-xs font-mono uppercase tracking-widest text-[#65E6EA] font-semibold">
                 Creative Philosophy
-              </span>
-              <p className="text-sm sm:text-base font-editorial text-white/90 italic leading-relaxed">
-                &ldquo;{philosophy}&rdquo;
+              </div>
+              <p className="text-xs sm:text-sm text-gray-300 font-serif italic leading-relaxed">
+                &ldquo;A great photograph or film is never about equipment—it is about stillness in chaos, the breath before a spoken vow, and honoring the dignity of human celebration.&rdquo;
               </p>
             </div>
 
-            {/* Craft Pillars */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-1 sm:pt-2">
-              <div className="p-5 bg-[#12181C] border border-white/10 rounded-xl hover:border-[#65E6EA]/40 transition-colors">
-                <div className="text-[#65E6EA] mb-2.5">
-                  <Film className="w-5 h-5" />
-                </div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">
-                  Cinema Aesthetics
-                </h4>
-                <p className="text-xs text-[#9CA7AD] leading-relaxed">
+            {/* 3 Pillars Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <div className="p-4 rounded-xl bg-[#12181C]/70 border border-white/5 space-y-2">
+                <Film className="w-5 h-5 text-[#65E6EA]" />
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Cinema Aesthetics</h4>
+                <p className="text-[11px] text-[#9CA7AD] leading-relaxed">
                   Prime optics, organic film curve & authentic colors.
                 </p>
               </div>
 
-              <div className="p-5 bg-[#12181C] border border-white/10 rounded-xl hover:border-[#8B7CFF]/40 transition-colors">
-                <div className="text-[#8B7CFF] mb-2.5">
-                  <Heart className="w-5 h-5" />
-                </div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">
-                  Candid Intimacy
-                </h4>
-                <p className="text-xs text-[#9CA7AD] leading-relaxed">
+              <div className="p-4 rounded-xl bg-[#12181C]/70 border border-white/5 space-y-2">
+                <Heart className="w-5 h-5 text-[#B388FF]" />
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Candid Intimacy</h4>
+                <p className="text-[11px] text-[#9CA7AD] leading-relaxed">
                   Documenting raw, authentic emotion without artificial posing.
                 </p>
               </div>
 
-              <div className="p-5 bg-[#12181C] border border-white/10 rounded-xl hover:border-[#65E6EA]/40 transition-colors">
-                <div className="text-[#65E6EA] mb-2.5">
-                  <Globe className="w-5 h-5" />
-                </div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">
-                  Global Reach
-                </h4>
-                <p className="text-xs text-[#9CA7AD] leading-relaxed">
+              <div className="p-4 rounded-xl bg-[#12181C]/70 border border-white/5 space-y-2">
+                <Globe className="w-5 h-5 text-[#65E6EA]" />
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Global Reach</h4>
+                <p className="text-[11px] text-[#9CA7AD] leading-relaxed">
                   Ready for destination weddings and remote international sets.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Right Column: 3D Portrait & Stats */}
-          <div className="lg:col-span-5 space-y-8">
-            <Card3D maxTilt={7} glareOpacity={0.25} className="border border-white/15 shadow-2xl">
-              <div className="relative aspect-[4/5] bg-gradient-to-b from-[#12181C] via-[#0D1215] to-[#080B0D] overflow-hidden">
-                {portraitUrl ? (
-                  <img
-                    src={portraitUrl}
-                    alt={`${name} Portrait`}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col justify-end p-8 relative">
-                    <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                      <div className="w-48 h-48 rounded-full border border-[#65E6EA]/40 flex items-center justify-center">
-                        <Camera className="w-16 h-16 text-[#65E6EA]" />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Overlaid artist credit */}
-                <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-[#080B0D] via-[#080B0D]/80 to-transparent">
-                  <div className="text-[10px] uppercase tracking-[0.25em] text-[#65E6EA] font-bold">
-                    Cinematographer & Photographer
-                  </div>
-                  <h4 className="text-2xl font-display font-bold text-white mt-0.5">
-                    {name}
-                  </h4>
-                  <p className="text-xs text-[#9CA7AD] mt-0.5 font-light">
-                    Based in Mumbai · Available Worldwide
-                  </p>
-                </div>
+          {/* Right Column: Photographer Portrait Card */}
+          <div className="lg:col-span-5">
+            <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-[#0D1215] shadow-2xl group">
+              <div className="relative aspect-[3/4] w-full overflow-hidden bg-black/50">
+                <img
+                  src={portraitImg}
+                  alt="Rishabh Sen - Cinematographer"
+                  loading="lazy"
+                  className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  onError={(e) => {
+                    // Fallback to unsplash portrait if link breaks
+                    (e.target as HTMLImageElement).src =
+                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1000&q=80';
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#080B0D] via-[#080B0D]/40 to-transparent" />
               </div>
-            </Card3D>
 
-            {/* Statistics Row: 3D Cards */}
-            <div className="grid grid-cols-2 gap-4 p-5 bg-[#12181C] border border-white/10 rounded-2xl shadow-xl">
-              {stats.map((stat, idx) => (
-                <div key={idx} className="p-3 border-b border-white/5 last:border-b-0 sm:last:border-b">
-                  <div className="text-2xl sm:text-3xl font-display font-bold text-[#65E6EA] tabular-nums">
-                    {stat.value}
-                    <span className="text-sm font-sans-clean font-light text-[#9CA7AD] ml-0.5">
-                      {stat.suffix}
-                    </span>
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-[#9CA7AD] mt-1 font-semibold">
-                    {stat.label}
-                  </div>
+              <div className="absolute bottom-0 inset-x-0 p-6 sm:p-8">
+                <div className="text-[11px] uppercase tracking-[0.25em] text-[#65E6EA] font-mono font-semibold">
+                  Cinematographer & Photographer
                 </div>
-              ))}
+                <h3 className="text-2xl font-serif font-bold text-white mt-1">
+                  Rishabh Sen
+                </h3>
+                <p className="text-xs text-gray-400 mt-0.5 font-light">
+                  Based in Mumbai · Available Worldwide
+                </p>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
   );
 };
+
+export default About;
