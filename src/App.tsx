@@ -5,7 +5,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/public/Navbar';
-import { Hero } from './components/public/Hero';
 import { About } from './components/public/About';
 import { FilmsShowcase } from './components/public/FilmsShowcase';
 import { Services } from './components/public/Services';
@@ -33,7 +32,6 @@ import { FALLBACK_PUBLIC_CONTENT } from './data/fallbackContent';
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname);
-  // Eliminate blank/infinite loading screen with immediate fallback mock data
   const [content, setContent] = useState<PublicContentResponse>(FALLBACK_PUBLIC_CONTENT);
   const [loading, setLoading] = useState(false);
   const [selectedService, setSelectedService] = useState<string>('');
@@ -156,7 +154,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#080B0D] text-white font-sans-clean selection:bg-[#65E6EA] selection:text-[#080B0D] relative overflow-x-hidden w-full max-w-[100vw]">
-      {/* Professional initial reveal loading animation (DipVibe.S) */}
+      {/* Initial reveal loading animation */}
       {showLoadingScreen && (
         <LoadingScreen onFinished={() => setShowLoadingScreen(false)} />
       )}
@@ -164,22 +162,19 @@ export default function App() {
       {/* Dynamic 3D Cinematic Animated Background */}
       <CinematicBackground />
 
-      {/* 1. Premium Sticky Navigation */}
+      {/* 1. Sticky Navigation */}
       <Navbar onAdminClick={() => navigateTo(adminUser ? '/admin' : '/admin/login')} />
 
-      {/* 2. Hero Section (Display title, subtitle, badges, dual CTAs) */}
-      <Hero hero={content.siteSettings?.hero} />
-
-      {/* 3. About Section (Philosophy, narrative, 4-item stats grid) */}
+      {/* 2. Top Section: ABOUT RISHABH SEN (वेबसाइट खुलते ही सबसे पहले स्क्रीन पर यही आएगा) */}
       <About about={content.siteSettings?.about} />
 
-      {/* 4. Cinematography / Films Showcase (Master video player with YouTube embed) */}
+      {/* 3. Cinematography / Films Showcase */}
       <FilmsShowcase films={content.films || []} />
 
-      {/* 5. Portfolio Section (Multi-tab filter + full-screen Lightbox) */}
+      {/* 4. Portfolio Section */}
       <Portfolio portfolio={content.portfolio || []} />
 
-      {/* 6. Services Section (8 services with icons and booking links) */}
+      {/* 5. Services Section */}
       <Services
         services={content.services || []}
         onSelectService={(title) => {
@@ -189,25 +184,25 @@ export default function App() {
         }}
       />
 
-      {/* 7. Featured Story Section (Royal wedding showcase with cover imagery) */}
+      {/* 6. Featured Story Section */}
       <FeaturedStory story={content.siteSettings?.featuredStory} />
 
-      {/* 8. Highlights Section (Craft pillars: Storytelling, Sound & Music, Color Science) */}
+      {/* 7. Highlights Section */}
       <Highlights highlights={content.siteSettings?.highlights || []} />
 
-      {/* 9. Testimonials Section (Client quotes with star ratings) */}
+      {/* 8. Testimonials Section */}
       <Testimonials testimonials={content.testimonials || []} />
 
-      {/* 10. Social Section (Outbound profile links) */}
+      {/* 9. Social Section */}
       <SocialSection contact={content.siteSettings?.contact} />
 
-      {/* 11. Contact Section (Interactive commission booking form with submission state) */}
+      {/* 10. Contact Section */}
       <ContactSection
         contact={content.siteSettings?.contact}
         initialService={selectedService}
       />
 
-      {/* 12. Footer (Studio branding & rights) */}
+      {/* 11. Footer */}
       <Footer
         footer={content.siteSettings?.footer}
         contact={content.siteSettings?.contact}
