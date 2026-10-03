@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowUpRight, Lock } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 
 interface NavbarProps {
   onAdminClick?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onAdminClick }) => {
+export const Navbar: React.FC<NavbarProps> = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -13,7 +13,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onAdminClick }) => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -36,7 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onAdminClick }) => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Zone 1: Single text element wordmark */}
+        {/* Zone 1: لوگو اور نام */}
         <a
           href="#"
           className="group flex items-center gap-2.5 text-lg sm:text-xl font-display font-bold tracking-[0.16em] text-white uppercase transition-colors"
@@ -45,7 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onAdminClick }) => {
           <span className="w-2 h-2 rounded-full bg-[#65E6EA] shadow-[0_0_10px_#65E6EA] inline-block opacity-90 group-hover:scale-125 transition-transform" />
         </a>
 
-        {/* Zone 2: Clean text navigation links */}
+        {/* Zone 2: نیویگیشن لنکس */}
         <nav className="hidden md:flex items-center gap-7 text-xs font-sans-clean uppercase tracking-[0.18em] text-[#9CA7AD]">
           {navLinks.map((link) => (
             <a
@@ -58,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onAdminClick }) => {
           ))}
         </nav>
 
-        {/* Zone 3: Actions */}
+        {/* Zone 3: بٹن (لاک کا نشان یہاں سے ہٹا دیا گیا ہے) */}
         <div className="hidden sm:flex items-center gap-3">
           <a
             href="#contact"
@@ -67,31 +67,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onAdminClick }) => {
             <span>Book a Session</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </a>
-
-          {onAdminClick && (
-            <button
-              onClick={onAdminClick}
-              title="Admin Portal"
-              aria-label="Admin Portal"
-              className="p-2 text-[#9CA7AD] hover:text-[#65E6EA] hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10 transition-colors cursor-pointer"
-            >
-              <Lock className="w-4 h-4" />
-            </button>
-          )}
         </div>
 
-        {/* Mobile Hamburger toggle & Admin */}
+        {/* موبائل مینو ٹوگل بٹن (موبائل ویو سے بھی تالا ہٹا دیا گیا ہے) */}
         <div className="flex md:hidden items-center gap-1.5">
-          {onAdminClick && (
-            <button
-              onClick={onAdminClick}
-              title="Admin Portal"
-              aria-label="Admin Portal"
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#9CA7AD] hover:text-[#65E6EA] active:text-[#65E6EA] rounded-xl hover:bg-white/5 active:bg-white/10 transition-colors"
-            >
-              <Lock className="w-4 h-4" />
-            </button>
-          )}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
@@ -103,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onAdminClick }) => {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* موبائل ڈراور مینو */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#0D1215]/98 backdrop-blur-2xl border-b border-white/10 px-5 py-5 space-y-3 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col space-y-1">
@@ -135,3 +114,5 @@ export const Navbar: React.FC<NavbarProps> = ({ onAdminClick }) => {
     </header>
   );
 };
+
+export default Navbar;
