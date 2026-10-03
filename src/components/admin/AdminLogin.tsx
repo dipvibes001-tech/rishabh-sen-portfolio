@@ -7,7 +7,8 @@ interface AdminLoginProps {
 }
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
-  const [email, setEmail] = useState('admin@rishabhsen.com');
+  // Pre-filled email aur placeholder ko poori tarah blank kar diya gaya hai
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -94,17 +95,18 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-[11px] font-mono uppercase tracking-wider text-gray-400 mb-2">
-                Email / Gmail
+                Email / ID
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type="email"
+                  type="text"
                   required
+                  autoComplete="off"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#12181C] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:border-[#65E6EA] outline-none transition"
-                  placeholder="admin@rishabhsen.com"
+                  className="w-full bg-[#12181C] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:border-[#65E6EA] outline-none transition font-mono"
+                  placeholder=""
                 />
               </div>
             </div>
@@ -118,10 +120,11 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#12181C] border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm text-white focus:border-[#65E6EA] outline-none transition"
-                  placeholder="••••••••••••"
+                  className="w-full bg-[#12181C] border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm text-white focus:border-[#65E6EA] outline-none transition font-mono"
+                  placeholder=""
                 />
                 <button
                   type="button"
@@ -136,7 +139,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#65E6EA] to-[#B388FF] text-black font-semibold text-xs uppercase tracking-widest hover:opacity-90 transition flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_25px_rgba(101,230,234,0.3)] mt-2"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#65E6EA] to-[#B388FF] text-black font-semibold text-xs uppercase tracking-widest hover:opacity-90 transition flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_25px_rgba(101,230,234,0.3)] mt-2 disabled:opacity-50"
             >
               <span>{loading ? 'Authenticating...' : 'Enter Studio Console'}</span>
               <ArrowRight className="w-4 h-4" />
