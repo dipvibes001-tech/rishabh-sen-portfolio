@@ -13,11 +13,17 @@
     --text-muted: #9CA7AD;
   }
 
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: #080B0D;
     color: #FFFFFF;
     overflow-x: hidden;
+    overscroll-behavior-y: none;
   }
 
   h1, h2, h3, .font-display {
@@ -259,17 +265,82 @@
   animation: textShimmerSweep 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Android & Mobile Ultra-Smooth Interaction Kit                             */
+/* -------------------------------------------------------------------------- */
+
+/* Touch-card spring click feedback */
+.mobile-touch-spring {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease;
+}
+
+.mobile-touch-spring:active {
+  transform: scale(0.965);
+}
+
+/* Cine-Glow Pulse when tapping buttons/cards on phone */
+@keyframes touchPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(101, 230, 234, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(101, 230, 234, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(101, 230, 234, 0);
+  }
+}
+
+.active-touch-glow:active {
+  animation: touchPulse 0.35s ease-out;
+}
+
+/* Dynamic ambient film grain for rich black OLED screens */
+.cinematic-grain-overlay {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+/* Scroll-triggered reveal animation */
+@keyframes mobileFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mobile-reveal {
+  animation: mobileFadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Soft breathing neon glow for highlights */
+@keyframes neonBreath {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(101, 230, 234, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(101, 230, 234, 0.35);
+  }
+}
+
+.animate-neon-breath {
+  animation: neonBreath 3.2s ease-in-out infinite;
+}
+
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .animate-credit-reveal {
+  .animate-credit-reveal,
+  .animate-shimmer-sweep,
+  .animate-camera-float,
+  .mobile-reveal,
+  .animate-neon-breath {
     animation: none !important;
     filter: none !important;
     transform: none !important;
-  }
-  .animate-shimmer-sweep {
-    animation: none !important;
-  }
-  .animate-camera-float {
-    animation: none !important;
   }
   * {
     animation-duration: 0.001ms !important;
