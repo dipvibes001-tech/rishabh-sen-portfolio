@@ -168,6 +168,34 @@
   animation: pulseGlow 4s ease-in-out infinite;
 }
 
+/* 3D Sony FX3 Camera Animations */
+@keyframes camera3DFloat {
+  0%, 100% {
+    transform: translateY(0px) rotateY(-12deg) rotateX(6deg) scale(0.96);
+  }
+  50% {
+    transform: translateY(-16px) rotateY(12deg) rotateX(-4deg) scale(1.03);
+  }
+}
+
+.animate-camera-float {
+  animation: camera3DFloat 3s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 12s linear infinite;
+}
+
 /* Subtle Cinematic Vignette */
 .cinematic-vignette {
   box-shadow: inset 0 0 100px rgba(8, 11, 13, 0.85);
@@ -238,6 +266,9 @@
     transform: none !important;
   }
   .animate-shimmer-sweep {
+    animation: none !important;
+  }
+  .animate-camera-float {
     animation: none !important;
   }
   * {
